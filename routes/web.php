@@ -2,14 +2,16 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KegiatanController;
+use App\Models\Kegiatan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome.beranda');
+    return view('auth.login');
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $kegiatan = Kegiatan::with('kategori')->latest()->get();
+    return view('dashboard', compact('kegiatan'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -23,7 +25,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('/user/kegiatan', [App\Http\Controllers\UserKegiatanController::class, 'index'])->name('user.kegiatan.index');
+    Route::get('/admin/data-kegiatan', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.kegiatan.index');
+    Route::get('/admin/tambah-kegiatan', [App\Http\Controllers\AdminController::class, 'create'])->name('admin.kegiatan.create');
+
 });
 
 require __DIR__.'/auth.php';

@@ -1,29 +1,53 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+@extends('template.template')
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
+@section('judul')
+    Beranda
+@endsection
 
-                    @if(auth()->user()->role === 'admin')
-                        <p class="mt-4">Selamat datang, Admin! Anda dapat mengelola kegiatan.</p>
-                        <a href="{{ route('kegiatan.index') }}" class="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            Kelola Kegiatan
-                        </a>
-                    @else
-                        <p class="mt-4">Selamat datang, User! Anda dapat melihat kegiatan yang tersedia.</p>
-                        <a href="{{ route('user.kegiatan.index') }}" class="mt-4 inline-block bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-                            Lihat Kegiatan
-                        </a>
-                    @endif
-                </div>
-            </div>
-        </div>
+@section('konten')
+<div class="container mt-3">
+    <div class="jumbotron">
+        <h1 class="display-4">Hello, {{ auth()->user()->name }}</h1>
+        <p class="lead">Selamat Datang di Sistem Pendafatran Panitia Kegiatan mmm</p>
+        <hr class="my-4">
+        <p>Ujian Tengah Semester Mata Kuliah | Pemrograman Web Lanjut Sistem Informasi </p>
+        @if (auth()->user()->role == 'admin')
+            <a class="btn btn-primary btn-lg" href="{{ route('admin.kegiatan.index') }}" role="button">Kelola Kegiatan</a>  
+        @endif
     </div>
-</x-app-layout>
+
+    @if (auth()->user()->role == 'user')
+        <div class="table-responsive mt-5">
+        <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th scope="col">NO</th>
+              <th scope="col">Kategori</th>
+              <th scope="col">Kegiatan</th>
+              <th scope="col">Lokasi</th>
+              <th scope="col">Kuota</th>
+              <th scope="col">#</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+            @forelse ($kegiatan as $item)
+              <td>{{ $loop->iteration }}</td>
+              <td>{{ $item->kategori->nama_kategori }}</td>
+              <td>{{ $item->nama_kegiatan }}</td>
+              <td>{{ $item->lokasi }}</td>
+              <td>{{ $item->kuota }}</td>
+              <td><a class="btn btn-primary btn-sm" href="#" role="button">Daftar</a></td>
+              <td></td>
+            </tr>
+            @empty
+                <span>Tidak Ada Data</span>
+            @endforelse
+           
+          </tbody>
+        </table>
+    </div>
+    @endif
+</div>
+@endsection
+
